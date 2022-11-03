@@ -133,8 +133,6 @@ class Playlist
         // Дізнаюсь сьогоднішню дату:
         this.setDates()
 
-        $("#content-inner").text("")
-
         let lastTime = null
 
         axios.post(this.config.playListURL, {}).then((response) => {
@@ -281,11 +279,78 @@ class Playlist
             });
         });
 
-        console.log("playlistByDates", this.playlistByDates)
+        //console.log("playlistByDates", this.playlistByDates)
     }
 
     renderPlayList()
     {
+        let lastDateUnixTime = 0
+        let lastItemUnixTime = 0
+
+        let contentNode = $("#content-inner")
+
+        if(contentNode.length != 1) {
+            console.error("Щось не так з блоком контенту:", contentNode)
+            return
+        } else {
+            contentNode = contentNode[0]
+        }
+
+        this.playlistByDates.forEach((playListByDate) => {
+
+            // Шукаю блок за датою:
+            let contentDateNode = $(".content-date[unix='" + playListByDate.unix + "']")
+
+            // Якщо нема:
+            if(contentDateNode.length == 0) {
+                // То вставляю
+                let dateNode = document.createElement("div")
+                    dateNode.setAttribute("unix", playListByDate.unix)
+                    dateNode.classList.add("content-date")
+
+                let dateTitleNode = document.createElement("div")
+                    dateTitleNode.innerHTML = playListByDate.date
+                    dateTitleNode.classList.add("content-date-title")
+
+                let dateInnerNode = document.createElement("div")
+                    dateInnerNode.innerHTML = "dateInnerNode"
+                    dateInnerNode.classList.add("content-date-inner")
+
+                dateNode.append(dateTitleNode)
+                dateNode.append(dateInnerNode)
+
+                // Якщо це перший блок:
+                if(lastDateUnixTime == 0) {
+                    contentNode.appendChild(dateNode)
+                } else {
+                    if(lastDateUnixTime > 0) {
+                        let prevContentDateNode = $(".content-date[unix='" + lastDateUnixTime + "']")
+                        console.log("prevContentDateNode", prevContentDateNode, lastDateUnixTime)
+                        if(prevContentDateNode.length == 1) {
+                            prevContentDateNode[0].after(dateNode)
+                        }
+                    }
+                }
+
+            } else {
+                // А якщо є, то що робити?
+            }
+            console.log("contentDateNode", contentDateNode)
+
+
+            let dateNode = document.createElement("div")
+               // dateNode = "content-date"
+            console.log("node", playListByDate)
+
+            playListByDate.items.forEach((item) => {
+
+
+                lastItemUnixTime = item.unix
+            });
+
+            lastDateUnixTime = playListByDate.unix
+        });
+
         /*$("#content-inner").append(`
                     <div class="content-line">
                         <div className="line-time">` + timeNode[0].innerHTML + ` | (` +  playDate.format("DD/MM HH:mm") + `) </div>

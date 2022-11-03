@@ -51,10 +51,7 @@ class Template
         </div>
         <div id="content">
             <div id="content-inner">
-                <div class="content-line">
-                    <div class="line-time"></div>
-                    <div class="line-title"></div>
-                </div>
+
             </div>
         </div>
         <div id="footer">
