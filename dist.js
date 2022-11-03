@@ -93,6 +93,10 @@ class Playlist
                 this.showCurrentTrack(arr[0], "")
             } else if (arr.length == 2) {
                 this.showCurrentTrack(arr[0], arr[1])
+            } else if (arr.length > 2) {
+                let title = arr[0]
+                arr.shift()
+                this.showCurrentTrack(title, arr.join(" - "))
             }
             //console.log("response.data", response.data);
         }).catch((error) => {
@@ -200,10 +204,19 @@ class Playlist
                     let dateString = playedYesterday ? this.yesterday : this.today
                     let dateObj = moment(dateString)
 
+                    let songDateString = playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00"
+                    let songDateObj = moment(songDateString)
+
                     this.playlistByDates.push({
                         date: playedYesterday ? this.yesterday : this.today,
                         unix: dateObj.unix(),
-                        items: []
+                        items: [{
+                            date: playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00",
+                            unix: songDateObj.unix(),
+                            time: songTime,
+                            track: textNode[0].innerHTML.trim(),
+                            artist: textNode[0].innerHTML.trim(),
+                        }]
                     })
                 } else {
 
@@ -223,12 +236,12 @@ class Playlist
                     // Якщо нема, то додаю:
                     if(listItem == undefined) {
 
-                        let dateString = playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00"
-                        let dateObj = moment(dateString)
+                        let songDateString = playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00"
+                        let songDateObj = moment(songDateString)
 
                         playListByDate.items.push({
                             date: playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00",
-                            unix: dateObj.unix(),
+                            unix: songDateObj.unix(),
                             time: songTime,
                             track: textNode[0].innerHTML.trim(),
                             artist: textNode[0].innerHTML.trim(),
@@ -280,7 +293,7 @@ class Playlist
             });
         });
 
-        console.log("playlistByDates", this.playlistByDates)
+        // console.log("playlistByDates", this.playlistByDates)
     }
 
     renderPlayList()
@@ -317,7 +330,6 @@ class Playlist
                     dateInnerNode.setAttribute("unix", playListByDate.unix)
                     dateInnerNode.classList.add("content-date-inner")
 
-
                 dateNode.append(dateTitleNode)
                 dateNode.append(dateInnerNode)
 
@@ -337,13 +349,8 @@ class Playlist
             } else {
                 // А якщо є, то що робити?
             }
-            // console.log("contentDateNode", contentDateNode)
-
 
             let dateNode = document.createElement("div")
-
-            // dateNode = "content-date"
-            //console.log("node", playListByDate)
 
             // Рендер плейлиста дня:
             playListByDate.items.forEach((item) => {
@@ -365,6 +372,7 @@ class Playlist
                     let itemLineNode = document.createElement("div")
                         itemLineNode.setAttribute("unix", item.unix)
                         itemLineNode.classList.add("item-line")
+                        itemLineNode.classList.add("item-line-hidden")
 
 
                     let itemTimeNode = document.createElement("div")
@@ -388,7 +396,7 @@ class Playlist
                         let prevLineNode = document.querySelector(".item-line[unix='" + this.lastItemUnixTime + "']")
 
                         if (prevLineNode === null) {
-                            parentDateNode.append(itemLineNode)
+                           parentDateNode.append(itemLineNode)
                         } else {
                             if(item.unix > this.lastItemUnixTime) {
                                 parentDateNode.insertBefore(itemLineNode, parentDateNode.firstChild);
@@ -397,6 +405,10 @@ class Playlist
                             }
                         }
                     }
+
+                    setTimeout( () => {
+                        itemLineNode.classList.remove('item-line-hidden');
+                    }, 1000)
 
                 } else {
                     // console.log('є', item)
@@ -410,7 +422,10 @@ class Playlist
 
     } // <-- /renderPlayList()
 
-
+    clearOldPlaylist()
+    {
+        // TODO:
+    }
 
 }
 let playlist = new Playlist
