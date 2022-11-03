@@ -240,7 +240,11 @@ class Playlist
 
             });
 
-            console.log("playlistByDates", this.playlistByDates)
+
+
+            setTimeout( () => {
+                this.sortPlayList()
+            }, 300)
 
             setTimeout( () => {
                 this.renderPlayList()
@@ -260,6 +264,26 @@ class Playlist
         this.yesterday = yesterdayDate.format('YYYY') + "-" + yesterdayDate.format('DD') + "-" + yesterdayDate.format('MM')
     }
 
+    sortPlayList()
+    {
+        this.playlistByDates.sort(function(a, b) {
+
+            if (a.unix < b.unix) return 1
+            if (a.unix > b.unix) return -1
+            return 0;
+        });
+
+        this.playlistByDates.forEach((playListByDate) => {
+            playListByDate.items.sort(function(c, d) {
+                if (c.unix < d.unix) return 1
+                if (c.unix > d.unix) return -1
+                return 0;
+            });
+        });
+
+        console.log("playlistByDates", this.playlistByDates)
+    }
+
     renderPlayList()
     {
         /*$("#content-inner").append(`
@@ -272,6 +296,8 @@ class Playlist
 
         // console.log("getPlayList", timeNode[0].innerHTML, textNode[0].innerHTML)
     }
+
+
 
 }
 let playlist = new Playlist

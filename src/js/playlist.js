@@ -213,7 +213,7 @@ class Playlist
 
             });
 
-            console.log("playlistByDates", this.playlistByDates)
+
 
             setTimeout( () => {
                 this.sortPlayList()
@@ -239,7 +239,22 @@ class Playlist
 
     sortPlayList()
     {
+        this.playlistByDates.sort(function(a, b) {
 
+            if (a.unix < b.unix) return 1
+            if (a.unix > b.unix) return -1
+            return 0;
+        });
+
+        this.playlistByDates.forEach((playListByDate) => {
+            playListByDate.items.sort(function(c, d) {
+                if (c.unix < d.unix) return 1
+                if (c.unix > d.unix) return -1
+                return 0;
+            });
+        });
+
+        console.log("playlistByDates", this.playlistByDates)
     }
 
     renderPlayList()
