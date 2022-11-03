@@ -38,6 +38,7 @@ class Playlist
      */
     today = ''
     yesterday = ''
+    lastItemUnixTime = 0
 
     constructor()
     {
@@ -93,9 +94,9 @@ class Playlist
             } else if (arr.length == 2) {
                 this.showCurrentTrack(arr[0], arr[1])
             }
-
+            //console.log("response.data", response.data);
         }).catch((error) => {
-           // console.log("getCurrentTrack error", error);
+            //console.log("getCurrentTrack error", error);
             this.showCurrentTrack(this.config.errorMessages.api_errors[1][1], this.config.errorMessages.api_errors[1][0])
         });
     }
@@ -273,13 +274,13 @@ class Playlist
 
         this.playlistByDates.forEach((playListByDate) => {
             playListByDate.items.sort(function(c, d) {
-                if (c.unix < d.unix) return 1
-                if (c.unix > d.unix) return -1
+                if (c.unix < d.unix) return -1
+                if (c.unix > d.unix) return 1
                 return 0;
             });
         });
 
-        //console.log("playlistByDates", this.playlistByDates)
+        console.log("playlistByDates", this.playlistByDates)
     }
 
     renderPlayList()
@@ -313,8 +314,9 @@ class Playlist
                     dateTitleNode.classList.add("content-date-title")
 
                 let dateInnerNode = document.createElement("div")
-                    dateInnerNode.innerHTML = "dateInnerNode"
+                    dateInnerNode.setAttribute("unix", playListByDate.unix)
                     dateInnerNode.classList.add("content-date-inner")
+
 
                 dateNode.append(dateTitleNode)
                 dateNode.append(dateInnerNode)
@@ -323,9 +325,9 @@ class Playlist
                 if(lastDateUnixTime == 0) {
                     contentNode.appendChild(dateNode)
                 } else {
+                    // Якщо не перший, то вставляю після попереднього:
                     if(lastDateUnixTime > 0) {
                         let prevContentDateNode = $(".content-date[unix='" + lastDateUnixTime + "']")
-                        console.log("prevContentDateNode", prevContentDateNode, lastDateUnixTime)
                         if(prevContentDateNode.length == 1) {
                             prevContentDateNode[0].after(dateNode)
                         }
@@ -335,32 +337,78 @@ class Playlist
             } else {
                 // А якщо є, то що робити?
             }
-            console.log("contentDateNode", contentDateNode)
+            // console.log("contentDateNode", contentDateNode)
 
 
             let dateNode = document.createElement("div")
-               // dateNode = "content-date"
-            console.log("node", playListByDate)
 
+            // dateNode = "content-date"
+            //console.log("node", playListByDate)
+
+            // Рендер плейлиста дня:
             playListByDate.items.forEach((item) => {
 
+                // Шукаю блок за датою:
+                let parentDateNode = document.querySelector(".content-date-inner[unix='" + playListByDate.unix + "']")
 
-                lastItemUnixTime = item.unix
+                if (parentDateNode === null) {
+                    return
+                }
+
+                // Шукаю ноду ітема:
+                let itemLineNode = $(".item-line[unix='" + item.unix + "']")
+
+                // Якщо нема
+                if(itemLineNode.length == 0) {
+
+                    // Створюю ноду ітема:
+                    let itemLineNode = document.createElement("div")
+                        itemLineNode.setAttribute("unix", item.unix)
+                        itemLineNode.classList.add("item-line")
+
+
+                    let itemTimeNode = document.createElement("div")
+                        itemTimeNode.classList.add("line-time")
+                        itemTimeNode.innerText = item.time
+
+                    let itemTitleNode = document.createElement("div")
+                        itemTitleNode.classList.add("line-title")
+                        itemTitleNode.innerText = item.track
+
+                    itemLineNode.append(itemTimeNode)
+                    itemLineNode.append(itemTitleNode)
+
+
+                    // Вставляю першим:
+                    if(parentDateNode.firstChild == undefined) {
+                        parentDateNode.append(itemLineNode)
+                    } else {
+                        // Знаходжу попередній ітем:
+                        // Шукаю ноду помереднього ітема:
+                        let prevLineNode = document.querySelector(".item-line[unix='" + this.lastItemUnixTime + "']")
+
+                        if (prevLineNode === null) {
+                            parentDateNode.append(itemLineNode)
+                        } else {
+                            if(item.unix > this.lastItemUnixTime) {
+                                parentDateNode.insertBefore(itemLineNode, parentDateNode.firstChild);
+                            } else {
+                                prevLineNode.after(itemLineNode)
+                            }
+                        }
+                    }
+
+                } else {
+                    // console.log('є', item)
+                }
+
+                this.lastItemUnixTime = item.unix
             });
 
             lastDateUnixTime = playListByDate.unix
         });
 
-        /*$("#content-inner").append(`
-                    <div class="content-line">
-                        <div className="line-time">` + timeNode[0].innerHTML + ` | (` +  playDate.format("DD/MM HH:mm") + `) </div>
-
-                    </div>
-                `)*/
-        //<div className="line-title">` + textNode[0].innerHTML + `</div>
-
-        // console.log("getPlayList", timeNode[0].innerHTML, textNode[0].innerHTML)
-    }
+    } // <-- /renderPlayList()
 
 
 
@@ -565,10 +613,7 @@ class Template
         </div>
         <div id="content">
             <div id="content-inner">
-                <div class="content-line">
-                    <div class="line-time"></div>
-                    <div class="line-title"></div>
-                </div>
+
             </div>
         </div>
         <div id="footer">

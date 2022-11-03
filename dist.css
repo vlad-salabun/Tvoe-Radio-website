@@ -266,7 +266,10 @@ body {
     font-size: 0px !important;
 }
 
+.content-date-title {
+    background: #9a1c63;
 
+}
 
 #buttons-inner {
     display: flex;
