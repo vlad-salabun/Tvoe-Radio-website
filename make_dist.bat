@@ -1,1 +1,0 @@
-combine-files src/js/config.js,src/js/playlist.js,src/js/radio.js,src/js/template.js,src/js/version.js dist.js \n\n && combine-files src/css/body.css,src/css/test.css,src/css/header.css,src/css/buttons.css,src/css/playlist.css dist.css \n\n
