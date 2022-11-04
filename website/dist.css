@@ -1,0 +1,14 @@
+html,
+body {
+    height: 100%;
+    border-radius: 13px;
+    background: hsl(210deg 8% 95%);
+}
+
+body {
+    -webkit-app-region: drag;
+    color: #99d9ea;
+    overflow: hidden;
+    margin: 0px; padding: 0px;
+
+}
