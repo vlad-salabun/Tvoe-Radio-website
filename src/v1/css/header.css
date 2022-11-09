@@ -25,13 +25,6 @@
     transition: 0.3s font-size;
 }
 
-#download-button {
-    position: absolute;
-    bottom: 6px;
-    right: 11px;
-    -webkit-app-region: no-drag
-}
-
 .header-font-hide {
     font-size: 0px !important;
 }

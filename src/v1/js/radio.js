@@ -2,7 +2,7 @@ class Radio
 {
     soundURL = "https://complex.in.ua/tvoeRadio"
 
-    volume = 1
+    volume = 0.5
     muted = false
     currentTrack = ""
     playList = []
@@ -11,11 +11,19 @@ class Radio
 
     constructor(muted = false)
     {
+        setTimeout(() => {
+            this.volume = configs.userConfigs.userVolume
+        }, 20)
+
         this.setPlayer()
         this.muted = muted
 
         setTimeout(() => {
             this.muteListener()
+            this.volumeListener()
+
+            $('[type=range]').val(this.volume * 100)
+            $("#volume-value").text((Math.round(this.volume * 100)) + "%")
         }, 100)
 
 
@@ -32,6 +40,7 @@ class Radio
     setPlayer()
     {
         this.player = new Audio(this.soundURL);
+        this.player.volume = this.volume
 
         this.player.onplay = () => {
             // console.log('sound play')
@@ -68,7 +77,7 @@ class Radio
                     if(this.muted) {
                         this.mute()
                     }
-                    console.log('playPromise sound playPromise')
+                    console.log('playPromise: sound in ON!')
                 }).catch((error) => {
 
                     if ("DOMException: The element has no supported sources." == error) {
@@ -112,6 +121,29 @@ class Radio
         });
     }
 
+    volumeListener()
+    {
+        $('[type=range]').on('input',  (e) => {
+            let volume = $(e.currentTarget).val();
+
+            $("#volume-value").text(volume + "%")
+            this.volume = parseFloat(parseInt(volume) / 100);
+
+            if(this.muted) {
+                this.unmute()
+            }
+
+            this.player.volume = this.volume
+
+        });
+
+        $('[type=range]').on('change',  (e) => {
+            let volume = parseFloat(parseInt($(e.currentTarget).val()) / 100);
+
+            configs.saveConfigToStorage("userVolume", volume)
+        })
+    }
+
     mute()
     {
         $("#not-muted").hide()
@@ -131,9 +163,3 @@ class Radio
 
 let radio = new Radio(true);
 radio.play()
-
-
-
-
-
-

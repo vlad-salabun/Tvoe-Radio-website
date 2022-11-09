@@ -1,0 +1,26 @@
+#content-inner {
+    opacity: 1;
+    transition: opacity 0.4s, important 0.3s;
+}
+
+#weather-inner {
+    opacity: 1;
+    height: auto;
+    transition: opacity 0.4s, important 0.3s;
+}
+
+#config-inner {
+    opacity: 1;
+    height: auto;
+    transition: opacity 0.4s, important 0.3s;
+}
+
+.hidden-content {
+    opacity: 0 !important;
+    height: 0px !important;
+}
+
+.footer-button {
+    -webkit-app-region: no-drag;
+    cursor: pointer;
+}

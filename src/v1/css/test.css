@@ -71,22 +71,19 @@
 
 #content {
     width: 100%;
-    height: 473px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    height: 481px;
+    overflow: hidden;
 }
 
 #content-inner {
     width: 390px;
-    height: 444px;
+    height: 480px;
     overflow: auto;
     -webkit-app-region: no-drag;
     font-size: 13px;
     color: #bbbbbb;
     font-family: Arial;
-    padding: 15px 0px;
+    padding: 0px 0px;
 }
 
 /* width */
@@ -143,16 +140,19 @@
     font-size: 11px;
 }
 #footer-left {
-    width: 70px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding-left: 18px;
+    padding-left: 14px;
 }
 
 .footer-button {
     margin-right: 5px;
+    margin-right: 5px;
+    padding: 5px 11px;
+    background: #384044;
+    border-radius: 3px;
 }
 
 
