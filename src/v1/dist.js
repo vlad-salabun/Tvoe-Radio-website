@@ -34,7 +34,7 @@ class Config
     getConfigFromStorage()
     {
         window.api.send("read-one-from-storage", {"key": "configs"})
-        console.log("CONFIG updated from storage", this.userConfigs)
+        // console.log("CONFIG updated from storage", this.userConfigs)
     }
 
     /**
@@ -151,9 +151,9 @@ class Playlist
 
     showCurrentTrack(title, description)
     {
+
         this.currentArtist = title
         this.currentSong = description
-        document.title = title + " — " + description
 
         let titleElement = document.getElementById("header-title");
         let descriptionElement = document.getElementById("header-description");
@@ -165,14 +165,20 @@ class Playlist
         $("#header-title").addClass("header-font-hide")
         $("#header-description").addClass("header-font-hide")
 
+        let maxCurrentSongLength = 30
+
         setTimeout( () => {
 
-            titleElement.innerHTML = this.currentArtist
-            descriptionElement.innerHTML = this.currentSong
+            document.title = this.textEllipsis(this.decodeHTMLEntities(title), maxCurrentSongLength) + " — " + this.textEllipsis(this.decodeHTMLEntities(description), maxCurrentSongLength)
+
+            titleElement.innerHTML = this.textEllipsis(this.decodeHTMLEntities(this.currentArtist), maxCurrentSongLength)
+            descriptionElement.innerHTML = this.textEllipsis(this.decodeHTMLEntities(this.currentSong), maxCurrentSongLength)
 
             $("#header-title").removeClass("header-font-hide")
             $("#header-description").removeClass("header-font-hide")
         }, 700)
+
+        //Feels Like The First Time
     }
 
     getPlayList()
@@ -423,6 +429,21 @@ class Playlist
             contentNode = contentNode[0]
         }
 
+        let monthNames = {
+            '01': "січня",
+            '02': "лютого",
+            '03': "березня",
+            '04': "квітня",
+            '05': "травня",
+            '06': "червня",
+            '07': "липня",
+            '08': "серпня",
+            '09': "вересня",
+            '10': "жовтня",
+            '11': "листопада",
+            '12': "грудня",
+        }
+
         this.playlistByDates.forEach((playListByDate) => {
 
             // Шукаю блок за датою:
@@ -435,9 +456,13 @@ class Playlist
                     dateNode.setAttribute("unix", playListByDate.unix)
                     dateNode.classList.add("content-date")
 
+
+                let dateParts = playListByDate.date.split('-')
+
                 let dateTitleNode = document.createElement("div")
-                    dateTitleNode.innerHTML = "Ефір: " + playListByDate.date
+                    dateTitleNode.innerHTML = parseInt(dateParts[1]) + " " + monthNames[dateParts[2]]
                     dateTitleNode.classList.add("content-date-title")
+
 
                 let dateInnerNode = document.createElement("div")
                     dateInnerNode.setAttribute("unix", playListByDate.unix)
@@ -866,15 +891,12 @@ config-inner
                 $("#content-inner").addClass("hidden-content")
                 $("#weather-inner").removeClass("hidden-content")
 /*
-                window.api.send("save-to-storage", {
-                    "key": "test-key",
-                    "data": {
-                        "asmrtist": "PPOMO",
-                        "keywords": [1,2,3]
-                    }
+                window.api.send("stealth-window-mode", {
+                    "width": 420,
+                    "height": 200
                 });
 */
-                console.log("configs", configs)
+
 
 
             })

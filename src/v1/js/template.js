@@ -100,15 +100,12 @@ config-inner
                 $("#content-inner").addClass("hidden-content")
                 $("#weather-inner").removeClass("hidden-content")
 /*
-                window.api.send("save-to-storage", {
-                    "key": "test-key",
-                    "data": {
-                        "asmrtist": "PPOMO",
-                        "keywords": [1,2,3]
-                    }
+                window.api.send("stealth-window-mode", {
+                    "width": 420,
+                    "height": 200
                 });
 */
-                console.log("configs", configs)
+
 
 
             })

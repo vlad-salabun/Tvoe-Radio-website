@@ -34,7 +34,7 @@ class Config
     getConfigFromStorage()
     {
         window.api.send("read-one-from-storage", {"key": "configs"})
-        console.log("CONFIG updated from storage", this.userConfigs)
+        // console.log("CONFIG updated from storage", this.userConfigs)
     }
 
     /**
