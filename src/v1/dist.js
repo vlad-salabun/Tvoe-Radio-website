@@ -7,7 +7,9 @@ class Config
     playListURL = "https://www.tvoeradio.com/online/playlist.php"
 
     userConfigs = {
-        userVolume: 0.5
+        userVolume: 0.5,
+        autoLaunch: false,
+        windowSizeMode: "standard" //"stealth"
     }
 
     errorMessages = {
@@ -32,6 +34,7 @@ class Config
     getConfigFromStorage()
     {
         window.api.send("read-one-from-storage", {"key": "configs"})
+        console.log("CONFIG updated from storage", this.userConfigs)
     }
 
     /**
@@ -248,6 +251,11 @@ class Playlist
                     let songDateString = playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00"
                     let songDateObj = moment(songDateString)
 
+//console.log("textNode[0].innerHTML.trim()", textNode[0].innerHTML.trim())
+
+
+                    let trackInfo = this.parseTrackAndArtist(textNode[0].innerHTML.trim())
+
                     this.playlistByDates.push({
                         date: playedYesterday ? this.yesterday : this.today,
                         unix: dateObj.unix(),
@@ -255,8 +263,8 @@ class Playlist
                             date: playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00",
                             unix: songDateObj.unix(),
                             time: songTime,
-                            track: textNode[0].innerHTML.trim(),
-                            artist: textNode[0].innerHTML.trim(),
+                            track: trackInfo.track,
+                            artist: trackInfo.artist,
                         }]
                     })
                 } else {
@@ -280,12 +288,14 @@ class Playlist
                         let songDateString = playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00"
                         let songDateObj = moment(songDateString)
 
+                        let trackInfo = this.parseTrackAndArtist(textNode[0].innerHTML.trim())
+
                         playListByDate.items.push({
                             date: playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00",
                             unix: songDateObj.unix(),
                             time: songTime,
-                            track: textNode[0].innerHTML.trim(),
-                            artist: textNode[0].innerHTML.trim(),
+                            track: trackInfo.track,
+                            artist: trackInfo.artist,
                         })
                     }
 
@@ -307,6 +317,68 @@ class Playlist
             console.log("getPlayList error", error)
 
         });
+    }
+
+    parseTrackAndArtist(string)
+    {
+        if(string.length < 1) {
+            return {
+                artist: "Unknown artist",
+                track: "Unknown track",
+            }
+        }
+
+        let array = string.split(" - ")
+
+        if(array.length == 0) {
+            return {
+                artist: "Unknown artist",
+                track: "Unknown track",
+            }
+        } else if(array.length == 1) {
+            return {
+                artist:  this.decodeHTMLEntities(array[0]),
+                track: "",
+            }
+        } else if(array.length == 2) {
+            // console.log(array)
+            return {
+                artist:  this.decodeHTMLEntities(array[0]),
+                track:  this.decodeHTMLEntities(array[1]),
+            }
+        } else if(array.length == 3) {
+            // console.log("3:", array, string)
+            return {
+                artist:  this.decodeHTMLEntities(array[0]),
+                track: this.decodeHTMLEntities(array[1]) + ' (' + this.decodeHTMLEntities(array[2]) + ')' ,
+            }
+        }
+
+        return {
+            artist: "Artist",
+            track: "Track",
+        }
+    }
+
+    decodeHTMLEntities(text)
+    {
+        let entities = [
+            ['amp', '&'],
+            ['apos', '\''],
+            ['#x27', '\''],
+            ['#x2F', '/'],
+            ['#39', '\''],
+            ['#47', '/'],
+            ['lt', '<'],
+            ['gt', '>'],
+            ['nbsp', ' '],
+            ['quot', '"']
+        ];
+
+        for (let i = 0, max = entities.length; i < max; ++i)
+            text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+
+        return text;
     }
 
     setDates()
@@ -364,7 +436,7 @@ class Playlist
                     dateNode.classList.add("content-date")
 
                 let dateTitleNode = document.createElement("div")
-                    dateTitleNode.innerHTML = playListByDate.date
+                    dateTitleNode.innerHTML = "Ефір: " + playListByDate.date
                     dateTitleNode.classList.add("content-date-title")
 
                 let dateInnerNode = document.createElement("div")
@@ -422,7 +494,7 @@ class Playlist
 
                     let itemTitleNode = document.createElement("div")
                         itemTitleNode.classList.add("line-title")
-                        itemTitleNode.innerText = item.track
+                        itemTitleNode.innerText = this.textEllipsis(item.artist + " — " + item.track, 40)
 
                     itemLineNode.append(itemTimeNode)
                     itemLineNode.append(itemTitleNode)
@@ -468,11 +540,21 @@ class Playlist
         // TODO:
     }
 
+    textEllipsis(str, maxLength, { side = "end", ellipsis = "..." } = {}) {
+      if (str.length > maxLength) {
+        switch (side) {
+          case "start":
+            return ellipsis + str.slice(-(maxLength - ellipsis.length));
+          case "end":
+          default:
+            return str.slice(0, maxLength - ellipsis.length) + ellipsis;
+        }
+      }
+      return str;
+    }
+
 }
 let playlist = new Playlist
-
-
-
 
 
 class Radio
@@ -485,15 +567,16 @@ class Radio
     playList = []
 
     player = null
+    isFirstLaunch = true
+    enableMuting = false
 
-    constructor(muted = false)
+    constructor()
     {
         setTimeout(() => {
             this.volume = configs.userConfigs.userVolume
         }, 20)
 
         this.setPlayer()
-        this.muted = muted
 
         setTimeout(() => {
             this.muteListener()
@@ -554,6 +637,15 @@ class Radio
                     if(this.muted) {
                         this.mute()
                     }
+
+                    if(this.isFirstLaunch ) {
+
+                        if(!this.muted) {
+                            this.fadeInVolume()
+                        }
+                        this.isFirstLaunch = false
+                    }
+
                     console.log('playPromise: sound in ON!')
                 }).catch((error) => {
 
@@ -623,6 +715,10 @@ class Radio
 
     mute()
     {
+        if(!this.enableMuting) {
+            return
+        }
+
         $("#not-muted").hide()
         $("#muted").show()
 
@@ -634,11 +730,37 @@ class Radio
         $("#muted").hide()
         $("#not-muted").show()
 
-        this.player.volume = this.volume;
+        this.player.volume = this.volume
+    }
+
+    fadeInVolume()
+    {
+        document.getElementById("volume-slider").disabled = true
+
+        this.player.volume = 0
+        let steps = 10
+        let part = parseFloat(this.volume / steps)
+
+        for (var i = 0; i <= steps; i++) {
+
+            if(i == steps) {
+                setTimeout(() => {
+                    this.player.volum = this.volume
+                    this.enableMuting = true
+                    document.getElementById("volume-slider").disabled = false
+                }, 50 * i);
+
+            } else {
+                setTimeout(() => {
+                    this.player.volume = this.player.volume + part
+                }, 30 * i);
+            }
+        }
+
     }
 }
 
-let radio = new Radio(true);
+let radio = new Radio();
 radio.play()
 
 
@@ -706,7 +828,7 @@ config-inner
         <div id="footer">
             <div id="footer-left">
                 <div class="footer-button" id="show-playlist">
-                    Музика
+                    Ефір
                 </div>
                 <div class="footer-button" id="show-weather">
                     Погода
@@ -733,7 +855,6 @@ config-inner
         setTimeout( () => {
             $("#close-button").click( () => {
                 window.api.send("exit", {});
-                window.api.send("text", {});
             });
 
             $("#show-playlist").click( () => {
@@ -759,7 +880,17 @@ config-inner
             })
 
 
+
+
+
         }, 90)
+
+
+
+        setTimeout( () => {
+            $("#root").removeClass("hidden-content")
+        }, 1500)
+
     }
 
 

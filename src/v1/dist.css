@@ -108,7 +108,8 @@ body {
 
 /* width */
 #content-inner::-webkit-scrollbar {
-    width: 10px;
+    width: 15px;
+    cursor:pointer;
 }
 
 /* Track */
@@ -123,8 +124,10 @@ body {
 
 /* Handle on hover */
 #content-inner::-webkit-scrollbar-thumb:hover {
-    background: #2c2c2c;
+    background: #888;
+    cursor: pointer;
 }
+
 
 
 
@@ -455,6 +458,7 @@ input[type="range"]::-ms-track {
     justify-content: center;
     padding: 3px 0px;
     margin: 0px 0px 3px 0px;
+    color: #838080;
 }
 
 .item-line {

@@ -88,7 +88,8 @@
 
 /* width */
 #content-inner::-webkit-scrollbar {
-    width: 10px;
+    width: 15px;
+    cursor:pointer;
 }
 
 /* Track */
@@ -103,8 +104,10 @@
 
 /* Handle on hover */
 #content-inner::-webkit-scrollbar-thumb:hover {
-    background: #2c2c2c;
+    background: #888;
+    cursor: pointer;
 }
+
 
 
 

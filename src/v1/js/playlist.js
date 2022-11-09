@@ -180,6 +180,11 @@ class Playlist
                     let songDateString = playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00"
                     let songDateObj = moment(songDateString)
 
+//console.log("textNode[0].innerHTML.trim()", textNode[0].innerHTML.trim())
+
+
+                    let trackInfo = this.parseTrackAndArtist(textNode[0].innerHTML.trim())
+
                     this.playlistByDates.push({
                         date: playedYesterday ? this.yesterday : this.today,
                         unix: dateObj.unix(),
@@ -187,8 +192,8 @@ class Playlist
                             date: playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00",
                             unix: songDateObj.unix(),
                             time: songTime,
-                            track: textNode[0].innerHTML.trim(),
-                            artist: textNode[0].innerHTML.trim(),
+                            track: trackInfo.track,
+                            artist: trackInfo.artist,
                         }]
                     })
                 } else {
@@ -212,12 +217,14 @@ class Playlist
                         let songDateString = playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00"
                         let songDateObj = moment(songDateString)
 
+                        let trackInfo = this.parseTrackAndArtist(textNode[0].innerHTML.trim())
+
                         playListByDate.items.push({
                             date: playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00",
                             unix: songDateObj.unix(),
                             time: songTime,
-                            track: textNode[0].innerHTML.trim(),
-                            artist: textNode[0].innerHTML.trim(),
+                            track: trackInfo.track,
+                            artist: trackInfo.artist,
                         })
                     }
 
@@ -239,6 +246,68 @@ class Playlist
             console.log("getPlayList error", error)
 
         });
+    }
+
+    parseTrackAndArtist(string)
+    {
+        if(string.length < 1) {
+            return {
+                artist: "Unknown artist",
+                track: "Unknown track",
+            }
+        }
+
+        let array = string.split(" - ")
+
+        if(array.length == 0) {
+            return {
+                artist: "Unknown artist",
+                track: "Unknown track",
+            }
+        } else if(array.length == 1) {
+            return {
+                artist:  this.decodeHTMLEntities(array[0]),
+                track: "",
+            }
+        } else if(array.length == 2) {
+            // console.log(array)
+            return {
+                artist:  this.decodeHTMLEntities(array[0]),
+                track:  this.decodeHTMLEntities(array[1]),
+            }
+        } else if(array.length == 3) {
+            // console.log("3:", array, string)
+            return {
+                artist:  this.decodeHTMLEntities(array[0]),
+                track: this.decodeHTMLEntities(array[1]) + ' (' + this.decodeHTMLEntities(array[2]) + ')' ,
+            }
+        }
+
+        return {
+            artist: "Artist",
+            track: "Track",
+        }
+    }
+
+    decodeHTMLEntities(text)
+    {
+        let entities = [
+            ['amp', '&'],
+            ['apos', '\''],
+            ['#x27', '\''],
+            ['#x2F', '/'],
+            ['#39', '\''],
+            ['#47', '/'],
+            ['lt', '<'],
+            ['gt', '>'],
+            ['nbsp', ' '],
+            ['quot', '"']
+        ];
+
+        for (let i = 0, max = entities.length; i < max; ++i)
+            text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+
+        return text;
     }
 
     setDates()
@@ -296,7 +365,7 @@ class Playlist
                     dateNode.classList.add("content-date")
 
                 let dateTitleNode = document.createElement("div")
-                    dateTitleNode.innerHTML = playListByDate.date
+                    dateTitleNode.innerHTML = "Ефір: " + playListByDate.date
                     dateTitleNode.classList.add("content-date-title")
 
                 let dateInnerNode = document.createElement("div")
@@ -354,7 +423,7 @@ class Playlist
 
                     let itemTitleNode = document.createElement("div")
                         itemTitleNode.classList.add("line-title")
-                        itemTitleNode.innerText = item.track
+                        itemTitleNode.innerText = this.textEllipsis(item.artist + " — " + item.track, 40)
 
                     itemLineNode.append(itemTimeNode)
                     itemLineNode.append(itemTitleNode)
@@ -400,8 +469,18 @@ class Playlist
         // TODO:
     }
 
+    textEllipsis(str, maxLength, { side = "end", ellipsis = "..." } = {}) {
+      if (str.length > maxLength) {
+        switch (side) {
+          case "start":
+            return ellipsis + str.slice(-(maxLength - ellipsis.length));
+          case "end":
+          default:
+            return str.slice(0, maxLength - ellipsis.length) + ellipsis;
+        }
+      }
+      return str;
+    }
+
 }
 let playlist = new Playlist
-
-
-

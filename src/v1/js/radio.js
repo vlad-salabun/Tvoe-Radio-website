@@ -8,15 +8,16 @@ class Radio
     playList = []
 
     player = null
+    isFirstLaunch = true
+    enableMuting = false
 
-    constructor(muted = false)
+    constructor()
     {
         setTimeout(() => {
             this.volume = configs.userConfigs.userVolume
         }, 20)
 
         this.setPlayer()
-        this.muted = muted
 
         setTimeout(() => {
             this.muteListener()
@@ -77,6 +78,15 @@ class Radio
                     if(this.muted) {
                         this.mute()
                     }
+
+                    if(this.isFirstLaunch ) {
+
+                        if(!this.muted) {
+                            this.fadeInVolume()
+                        }
+                        this.isFirstLaunch = false
+                    }
+
                     console.log('playPromise: sound in ON!')
                 }).catch((error) => {
 
@@ -146,6 +156,10 @@ class Radio
 
     mute()
     {
+        if(!this.enableMuting) {
+            return
+        }
+
         $("#not-muted").hide()
         $("#muted").show()
 
@@ -157,9 +171,35 @@ class Radio
         $("#muted").hide()
         $("#not-muted").show()
 
-        this.player.volume = this.volume;
+        this.player.volume = this.volume
+    }
+
+    fadeInVolume()
+    {
+        document.getElementById("volume-slider").disabled = true
+
+        this.player.volume = 0
+        let steps = 10
+        let part = parseFloat(this.volume / steps)
+
+        for (var i = 0; i <= steps; i++) {
+
+            if(i == steps) {
+                setTimeout(() => {
+                    this.player.volum = this.volume
+                    this.enableMuting = true
+                    document.getElementById("volume-slider").disabled = false
+                }, 50 * i);
+
+            } else {
+                setTimeout(() => {
+                    this.player.volume = this.player.volume + part
+                }, 30 * i);
+            }
+        }
+
     }
 }
 
-let radio = new Radio(true);
+let radio = new Radio();
 radio.play()

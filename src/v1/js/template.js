@@ -62,7 +62,7 @@ config-inner
         <div id="footer">
             <div id="footer-left">
                 <div class="footer-button" id="show-playlist">
-                    Музика
+                    Ефір
                 </div>
                 <div class="footer-button" id="show-weather">
                     Погода
@@ -89,7 +89,6 @@ config-inner
         setTimeout( () => {
             $("#close-button").click( () => {
                 window.api.send("exit", {});
-                window.api.send("text", {});
             });
 
             $("#show-playlist").click( () => {
@@ -115,7 +114,17 @@ config-inner
             })
 
 
+
+
+
         }, 90)
+
+
+
+        setTimeout( () => {
+            $("#root").removeClass("hidden-content")
+        }, 1500)
+
     }
 
 

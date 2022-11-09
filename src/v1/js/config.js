@@ -7,7 +7,9 @@ class Config
     playListURL = "https://www.tvoeradio.com/online/playlist.php"
 
     userConfigs = {
-        userVolume: 0.5
+        userVolume: 0.5,
+        autoLaunch: false,
+        windowSizeMode: "standard" //"stealth"
     }
 
     errorMessages = {
@@ -32,6 +34,7 @@ class Config
     getConfigFromStorage()
     {
         window.api.send("read-one-from-storage", {"key": "configs"})
+        console.log("CONFIG updated from storage", this.userConfigs)
     }
 
     /**
