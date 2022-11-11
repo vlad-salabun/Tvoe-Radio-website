@@ -1,1 +1,1 @@
-combine-files js/config.js,js/playlist.js,js/radio.js,js/template.js,js/version.js,js/window-api.js dist.js \n\n && combine-files css/body.css,css/test.css,css/header.css,css/buttons.css,css/playlist.css,css/content.css dist.css \n\n
+combine-files js/config.js,js/visualizer.js,js/playlist.js,js/radio.js,js/template.js,js/version.js,js/window-api.js,js/weather.js dist.js \n\n && combine-files css/body.css,css/test.css,css/header.css,css/buttons.css,css/playlist.css,css/content.css,css/footer.css dist.css \n\n

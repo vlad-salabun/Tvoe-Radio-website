@@ -1,0 +1,77 @@
+#footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    height: 30px;
+    background: #28292b;
+    font-size: 12px;
+    color: #bbbbbb;
+    border-radius: 0px 0px 12px 12px;
+    font-family: Arial;
+    font-size: 11px;
+}
+#footer-left {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-left: 14px;
+}
+
+.footer-button {
+    margin-right: 5px;
+    margin-right: 5px;
+    padding: 3px 11px;
+
+
+    border-radius: 3px;
+    -webkit-app-region: no-drag;
+}
+
+.footer-button-active {
+    cursor: pointer;
+    background: #384044;
+}
+
+.footer-button-unactive {
+    background: #2d3336;
+}
+
+#footer-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-right: 11px
+}
+
+#version-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+
+background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAAv0lEQVQ4jcVSsQ3CMBA8I5qIJmWGoKeAQGMrYg6yCiNkDAaI3tIXzggMki6NpadJkIUSxxJFrvvX+d53OuBPqFQiEXUAzsGqM8aUyZeISObmXbLCAvZrBGYuvPdNVGDOn9b6aq2tvfdPAI2IZD82HDCGSERijPkGOhJZRA4i8qiq6r30g1gGWd/3ZezxmsCQ57lr2/YYE5gsOACXYO+01jdrbQ1gyuCklLoHnLQeMHNBRK+lHiRjuyIF6OZ6sD0+HzdhncaFhQ8AAAAASUVORK5CYII=')
+
+}
+
+#version {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#show-playlist {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#ether-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAABa0lEQVQ4jc2QMUsjURSFvzszCUKqFNrZyIKgjX9gi4FNDIE0EthiTeta7DbufxBsRLBwezciaQOD817IoIuNpFBw7fwF2qfJvLvNbJjErOnEU5373j0f3APvSp1OpzhvJ0mShfzs/TO9Xq9ZLpcv5wFGo9GVtXZrAhDH8ZKqnqRpujsPoKo7wM8oihbHAM/zvqvqWa1Wu4vjeNlaezcVEmPMfb/fX61Wq7fAebFY/DYGiEjD9/125g9FpJ0HiIgCp2ma7gM459qq2hgDVHXF87yHbHnTOfcLwBhzba39nXFOgU8ApVLpAfgwUeIsiYgDNH/NtA+y4dE5twbciMiFqraAg0ql8jEXaAExwHA4XAce8yd0nXPbAL7v74lIc7pEEfkcBMGP7OmLiHQBBCCKosVCofBHVatZy/+VMWZDREwQBGthGD57APV6/QnYFZGj18JZL8eq+jUMw+cXn0mSBDMyExoMBoV5O2+rv+h8jAeSPIoEAAAAAElFTkSuQmCC')
+}

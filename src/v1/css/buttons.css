@@ -110,7 +110,7 @@ input[type="range"] {
 
   height: 3px;
   border-radius: 5px;
-  background-image: linear-gradient(#f5ff00, #f0ff00);
+  background-image: linear-gradient(#bbbbbb, #bbbbbb);
   background-repeat: no-repeat;
 }
 
@@ -120,9 +120,8 @@ input[type="range"]::-webkit-slider-thumb {
   height: 12px;
   width: 12px;
   border-radius: 50%;
-  background: #20c6b9;
+  background: #bbbbbb;
   cursor: ew-resize;
-  box-shadow: 0 0 2px 0 #555;
   transition: background .3s ease-in-out;
 }
 
@@ -131,9 +130,8 @@ input[type="range"]::-moz-range-thumb {
     height: 12px;
     width: 12px;
     border-radius: 50%;
-    background: #20c6b9;
+    background: #bbbbbb;
     cursor: ew-resize;
-    box-shadow: 0 0 2px 0 #555;
     transition: background .3s ease-in-out;
 }
 
@@ -142,23 +140,22 @@ input[type="range"]::-ms-thumb {
     height: 12px;
     width: 12px;
     border-radius: 50%;
-    background: #20c6b9;
+    background: #bbbbbb;
     cursor: ew-resize;
-    box-shadow: 0 0 2px 0 #555;
     transition: background .3s ease-in-out;
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  background: #07aecd;
+  background: #bbbbbb;
   cursor: pointer;
 }
 
 input[type="range"]::-moz-range-thumb:hover {
-  background: #07aecd;
+  background: #bbbbbb;
 }
 
 input[type="range"]::-ms-thumb:hover {
-  background: #07aecd;
+  background: #bbbbbb;
 }
 
 /* Input Track */

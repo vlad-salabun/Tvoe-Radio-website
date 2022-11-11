@@ -7,7 +7,7 @@ class Version {
     constructor() {
         console.log('version', this.version)
         setTimeout(() => {
-            let versionElement = document.getElementById("version");
+            let versionElement = document.getElementById("version-number");
 
             if (versionElement !== undefined) {
                 versionElement.innerText = this.version

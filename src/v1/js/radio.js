@@ -10,6 +10,7 @@ class Radio
     player = null
     isFirstLaunch = true
     enableMuting = false
+    visualizer = null
 
     constructor()
     {
@@ -85,6 +86,12 @@ class Radio
                             this.fadeInVolume()
                         }
                         this.isFirstLaunch = false
+                    }
+
+                    if(this.visualizer == null) {
+                        visualizer = new Visualizer
+                        visualizer.init(this.player)
+                        this.visualizer = true
                     }
 
                     console.log('playPromise: sound in ON!')
