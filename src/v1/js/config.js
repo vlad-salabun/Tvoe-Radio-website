@@ -48,7 +48,7 @@ class Config
             this.userConfigs.userVolume = this.defaultVolume
         }
 
-        console.log("CONFIG updated from storage", this.userConfigs)
+        // console.log("CONFIG updated from storage", this.userConfigs)
 
     }
 

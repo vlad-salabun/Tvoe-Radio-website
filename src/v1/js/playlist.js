@@ -36,12 +36,6 @@ class Playlist
     downloadButtonListener()
     {
         $("#download-button").click( () => {
-            console.log(
-                "download-button",
-                this.currentArtist,
-                this.currentSong,
-            )
-
             window.api.send("open-external-url", "https://google.com/search?q=" + encodeURIComponent(this.currentArtist + " — " + this.currentSong + " завантажити"));
         });
     }
