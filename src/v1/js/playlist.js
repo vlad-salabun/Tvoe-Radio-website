@@ -140,21 +140,28 @@ class Playlist
                 // TODO: перевір чи час відтворення є валідним у HTML
                 let songTime = timeNode[0].innerHTML.trim()
 
+
                 // Дата відтворення:
-                let playDate = moment(this.today + "T" + songTime + ":00")
+                let playDate = moment(this.today + " " + songTime + ":00", "YYYY-DD-MM hh:mm:ss")
 
                 // Дізнаюсь чи ця дата є вчорашньою:
                 if(lastTime == null) {
+                    // console.log("lastTime", lastTime, this.today + "T" + songTime + ":00")
                     // Сьогоднішня:
-                    lastTime = moment(this.today + "T" + songTime + ":00")
+                    lastTime = moment(this.today + "T" + songTime + ":00", "YYYY-DD-MM hh:mm:ss")
 
                 } else {
+
+//console.log("playDate", playDate, this.today, moment("2022-13-11T18:30:00"))
+
                     // Якщо дата зросла, то це ознака вчорашньої дати:
                     if(playDate.unix() > lastTime.unix()) {
                         playedYesterday = true
-                        playDate = moment(this.yesterday + "T" + songTime + ":00")
-                        lastTime = moment(this.yesterday + "T" + songTime + ":00")
-
+                        playDate = moment(this.yesterday + "T" + songTime + ":00", "YYYY-DD-MM hh:mm:ss")
+                        lastTime = moment(this.yesterday + "T" + songTime + ":00", "YYYY-DD-MM hh:mm:ss")
+                            //console.log("playedYesterday ???", this.today, this.yesterday, playDate.unix(), lastTime.unix())
+                    } else {
+                            //console.log("played Today ???", this.today, this.today, playDate.unix(), lastTime.unix())
                     }
                 }
 
@@ -175,13 +182,10 @@ class Playlist
                 if(playListByDate == undefined) {
 
                     let dateString = playedYesterday ? this.yesterday : this.today
-                    let dateObj = moment(dateString)
+                    let dateObj = moment(dateString, "YYYY-DD-MM")
 
-                    let songDateString = playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00"
-                    let songDateObj = moment(songDateString)
-
-//console.log("textNode[0].innerHTML.trim()", textNode[0].innerHTML.trim())
-
+                    let songDateString = playedYesterday ? this.yesterday + " " + songTime + ":00" : this.today + " " + songTime + ":00"
+                    let songDateObj = moment(songDateString, "YYYY-DD-MM hh:mm:ss")
 
                     let trackInfo = this.parseTrackAndArtist(textNode[0].innerHTML.trim())
 
@@ -214,8 +218,8 @@ class Playlist
                     // Якщо нема, то додаю:
                     if(listItem == undefined) {
 
-                        let songDateString = playedYesterday ? this.yesterday + "T" + songTime + ":00" : this.today + "T" + songTime + ":00"
-                        let songDateObj = moment(songDateString)
+                        let songDateString = playedYesterday ? this.yesterday + " " + songTime + ":00" : this.today + " " + songTime + ":00"
+                        let songDateObj = moment(songDateString, "YYYY-DD-MM hh:mm:ss")
 
                         let trackInfo = this.parseTrackAndArtist(textNode[0].innerHTML.trim())
 
@@ -316,6 +320,8 @@ class Playlist
         let yesterdayDate = moment().tz('Europe/Kiev').subtract(1, 'days')
         this.today = currentDate.format('YYYY') + "-" + currentDate.format('DD') + "-" + currentDate.format('MM')
         this.yesterday = yesterdayDate.format('YYYY') + "-" + yesterdayDate.format('DD') + "-" + yesterdayDate.format('MM')
+
+        //console.log("set dates", this.today, this.yesterday)
     }
 
     sortPlayList()
@@ -366,7 +372,7 @@ class Playlist
             '11': "листопада",
             '12': "грудня",
         }
-
+//console.log(this.playlistByDates)
         this.playlistByDates.forEach((playListByDate) => {
 
             // Шукаю блок за датою:
