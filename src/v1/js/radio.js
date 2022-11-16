@@ -42,6 +42,7 @@ class Radio
     setPlayer()
     {
         this.player = new Audio(this.soundURL);
+        // TODO: this.player.crossOrigin = "anonymous";
         this.player.volume = this.volume
 
         this.player.onplay = () => {
